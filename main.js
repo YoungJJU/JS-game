@@ -29,15 +29,55 @@ function loadImage(){
     obstacleImage.src = "images/obstacle.png";
 }
 
+let keysDown = {}
+function setupKeyboardListener(){
+    document.addEventListener("keydown", function(event){
+        keysDown[event.keyCode] = true;
+    
+    });
+    document.addEventListener('keyup',function(){
+        delete keysDown[event.keyCode];
+    })
+}
+
+function update(){
+    if (39 in keysDown){
+        spaceshipX += 5;
+    }
+    if (37 in keysDown){
+        spaceshipX -= 5;
+    }
+    if (38 in keysDown){
+        spaceshipY -= 5;
+    }
+    if (40 in keysDown){
+        spaceshipY += 5;
+    }
+    if(spaceshipX <= 0){
+        spaceshipX = 0;
+    }
+    if(spaceshipX >= canvas.width - 64){
+        spaceshipX = canvas.width -64;
+    }
+    if(spaceshipY <= 0){
+        spaceshipY = 0;
+    }
+    if(spaceshipY >= canvas.height - 64){
+        spaceshipY = canvas.height - 64;
+    }
+}
+
 function render(){
     ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
     ctx.drawImage(spaceshipImage, spaceshipX, spaceshipY, 64, 64);
 }
 function main(){
+    update();
     render();
     requestAnimationFrame(main);
 }
 
 
 loadImage();
+setupKeyboardListener();
 main();
