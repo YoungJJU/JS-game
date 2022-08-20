@@ -11,6 +11,24 @@ document.body.appendChild(canvas);
 let spaceshipX = canvas.width/2 - 32;
 let spaceshipY = canvas.height - 64;
 
+let bulletList = [];
+function Bullet(){
+    this.x = 0;
+    this.y = 0;
+    this.init = function(){
+        this.x = spaceshipX;
+        this.y = spaceshipY - 18;
+        this.x1 = spaceshipX + 32;
+        this.y1 = spaceshipY - 27;
+
+        bulletList.push(this);
+    };
+    this.update = function(){
+        this.y -= 7;
+        this.y1 -= 7;
+    };
+}
+
 let backgroundImage, spaceshipImage,bulletImage,enemyImage, obstacleImage
 function loadImage(){
     backgroundImage = new Image();
@@ -37,7 +55,16 @@ function setupKeyboardListener(){
     });
     document.addEventListener('keyup',function(){
         delete keysDown[event.keyCode];
-    })
+
+        if(event.keyCode == 65){
+            createBullet();
+        }
+    });
+}
+
+function createBullet(){
+    let b = new Bullet();
+    b.init();
 }
 
 function update(){
@@ -65,11 +92,20 @@ function update(){
     if(spaceshipY >= canvas.height - 64){
         spaceshipY = canvas.height - 64;
     }
+
+    for(let i = 0; i<bulletList.length;i++){
+        bulletList[i].update();
+    }
 }
 
 function render(){
     ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
     ctx.drawImage(spaceshipImage, spaceshipX, spaceshipY, 64, 64);
+
+    for(let i = 0; i < bulletList.length; i++){
+        ctx.drawImage(bulletImage,bulletList[i].x, bulletList[i].y, 15, 30);
+        ctx.drawImage(bulletImage,bulletList[i].x1, bulletList[i].y1,15, 30);
+    }
 }
 function main(){
     update();
